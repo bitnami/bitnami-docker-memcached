@@ -8,8 +8,6 @@ RUBY_IMAGE_NAME=bitnami/ruby
 # source the helper script
 APP_NAME=memcached
 SLEEP_TIME=5
-VOL_PREFIX=/bitnami/$APP_NAME
-VOLUMES=$VOL_PREFIX/logs
 load tests/docker_helper
 
 # Cleans up all running/stopped containers and host mounted volumes
@@ -55,12 +53,6 @@ create_ruby_container() {
   [[ "$output" =~ "Authentication required" ]]
 
   run docker exec $RUBY_CONTAINER_NAME \
-    ruby -e "require 'dalli'; Dalli::Client.new('$APP_NAME:11211', {username: 'user', password: '$MEMCACHED_PASSWORD'}).set('test', 'bitnami')"
+    ruby -e "require 'dalli'; Dalli::Client.new('$APP_NAME:11211', {username: 'root', password: '$MEMCACHED_PASSWORD'}).set('test', 'bitnami')"
   [[ "$output" =~ "Authenticated" ]]
-}
-
-@test "All the volumes exposed" {
-  container_create default -d
-  run container_inspect default --format {{.Mounts}}
-  [[ "$output" =~ "$VOL_PREFIX/logs" ]]
 }
