@@ -1,5 +1,6 @@
 #!/usr/bin/env bats
 
+MEMCACHED_USER=test_user
 MEMCACHED_PASSWORD=test_password123
 
 RUBY_CONTAINER_NAME=bitnami-ruby-test
@@ -54,5 +55,17 @@ create_ruby_container() {
 
   run docker exec $RUBY_CONTAINER_NAME \
     ruby -e "require 'dalli'; Dalli::Client.new('$APP_NAME:11211', {username: 'root', password: '$MEMCACHED_PASSWORD'}).set('test', 'bitnami')"
+  [[ "$output" =~ "Authenticated" ]]
+}
+
+@test "Can create custom user with password" {
+  container_create default -d \
+    -e MEMCACHED_USER=$MEMCACHED_USER \
+    -e MEMCACHED_PASSWORD=$MEMCACHED_PASSWORD
+
+  create_ruby_container
+
+  run docker exec $RUBY_CONTAINER_NAME \
+    ruby -e "require 'dalli'; Dalli::Client.new('$APP_NAME:11211', {username: '$MEMCACHED_USER', password: '$MEMCACHED_PASSWORD'}).set('test', 'bitnami')"
   [[ "$output" =~ "Authenticated" ]]
 }
