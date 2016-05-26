@@ -35,7 +35,7 @@ create_ruby_container() {
   docker exec $RUBY_CONTAINER_NAME sudo gem install dalli
 }
 
-@test "Auth if no password provided" {
+@test "Port 11211 is exposed and accepting connections" {
   container_create default -d
   create_ruby_container
   run docker exec $RUBY_CONTAINER_NAME \
