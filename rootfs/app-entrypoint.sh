@@ -8,8 +8,7 @@ if [[ "$1" == "harpoon" && "$2" == "start" ]]; then
       ${MEMCACHED_USER:+--username $MEMCACHED_USER} \
       ${MEMCACHED_PASSWORD:+--password $MEMCACHED_PASSWORD}
   fi
+  chown $BITNAMI_APP_USER: /bitnami/$BITNAMI_APP_NAME || true
 fi
-
-chown $BITNAMI_APP_USER: /bitnami/$BITNAMI_APP_NAME || true
 
 exec /entrypoint.sh "$@"
