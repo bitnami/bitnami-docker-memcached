@@ -7,6 +7,7 @@ ENV HOME="/" \
     OS_NAME="linux"
 
 COPY prebuildfs /
+RUN chmod +x /usr/sbin/install_packages && chmod +x -R /opt/bitnami
 # Install required system packages and dependencies
 RUN install_packages acl ca-certificates curl gzip libc6 libevent-2.1-6 libsasl2-2 libsasl2-modules procps sasl2-bin tar
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "memcached" "1.6.6-0" --checksum 15b1c136500b48450c07053972745188e9bfda7c8177d51e905d2a17a107e624
@@ -18,6 +19,7 @@ RUN ln -s /opt/bitnami/scripts/memcached/entrypoint.sh /entrypoint.sh
 RUN ln -s /opt/bitnami/scripts/memcached/run.sh /run.sh
 
 COPY rootfs /
+RUN chmod +x -R /opt/bitnami
 RUN /opt/bitnami/scripts/memcached/postunpack.sh
 ENV BITNAMI_APP_NAME="memcached" \
     BITNAMI_IMAGE_VERSION="1.6.6-debian-10-r83" \
